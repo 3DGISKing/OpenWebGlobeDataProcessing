@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\core\app\Logger.cpp" />
+    <ClCompile Include="..\..\source\core\app\ProcessingSettings.cpp" />
+    <ClCompile Include="..\..\source\core\app\QueueManager.cpp" />
+    <ClCompile Include="..\..\source\core\boost\json-spirit\json_spirit_reader.cpp" />
+    <ClCompile Include="..\..\source\core\boost\json-spirit\json_spirit_value.cpp" />
+    <ClCompile Include="..\..\source\core\boost\json-spirit\json_spirit_writer.cpp" />
+    <ClCompile Include="..\..\source\core\geo\CoordinateTransformation.cpp" />
+    <ClCompile Include="..\..\source\core\geo\ElevationLayerSettings.cpp" />
+    <ClCompile Include="..\..\source\core\geo\ElevationReader.cpp" />
+    <ClCompile Include="..\..\source\core\geo\ElevationTile.cpp" />
+    <ClCompile Include="..\..\source\core\geo\ImageLayerSettings.cpp" />
+    <ClCompile Include="..\..\source\core\geo\MercatorQuadtree.cpp" />
+    <ClCompile Include="..\..\source\core\geo\PointCloudReader.cpp" />
+    <ClCompile Include="..\..\source\core\geo\PointLayerSettings.cpp" />
+    <ClCompile Include="..\..\source\core\geo\PointMap.cpp" />
+    <ClCompile Include="..\..\source\core\geo\ProcessStatus.cpp" />
+    <ClCompile Include="..\..\source\core\http\Get.cpp" />
+    <ClCompile Include="..\..\source\core\http\Header.cpp" />
+    <ClCompile Include="..\..\source\core\http\Post.cpp" />
+    <ClCompile Include="..\..\source\core\image\ImageHandler.cpp" />
+    <ClCompile Include="..\..\source\core\image\ImageLoader.cpp" />
+    <ClCompile Include="..\..\source\core\image\ImageWriter.cpp" />
+    <ClCompile Include="..\..\source\core\image\JPEGHandler.cpp" />
+    <ClCompile Include="..\..\source\core\io\CommonPath.cpp" />
+    <ClCompile Include="..\..\source\core\io\FileReaderFactory.cpp" />
+    <ClCompile Include="..\..\source\core\io\FileSystem.cpp" />
+    <ClCompile Include="..\..\source\core\io\FileWriterFactory.cpp" />
+    <ClCompile Include="..\..\source\core\io\fs\FileReaderDisk.cpp" />
+    <ClCompile Include="..\..\source\core\io\fs\FileReaderHttp.cpp" />
+    <ClCompile Include="..\..\source\core\io\fs\FileWriterDisk.cpp" />
+    <ClCompile Include="..\..\source\core\io\fs\FileWriterHttp.cpp" />
+    <ClCompile Include="..\..\source\core\io\TarWriter.cpp" />
+    <ClCompile Include="..\..\source\core\math\CloudPoint.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\DelaunayLocationStructure.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\DelaunayMemoryManager.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\DelaunayTriangle.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\DelaunayTriangulation.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\DelaunayVertex.cpp" />
+    <ClCompile Include="..\..\source\core\math\delaunay\Predicates.cpp" />
+    <ClCompile Include="..\..\source\core\math\ElevationPoint.cpp" />
+    <ClCompile Include="..\..\source\core\math\GeoCoord.cpp" />
+    <ClCompile Include="..\..\source\core\math\vec3.cpp" />
+    <ClCompile Include="..\..\source\core\ogprocess.cpp" />
+    <ClCompile Include="..\..\source\core\string\ConvertUTF.cpp" />
+    <ClCompile Include="..\..\source\core\string\FilenameUtils.cpp" />
+    <ClCompile Include="..\..\source\core\string\StringUtils.cpp" />
+    <ClCompile Include="..\..\source\core\system\Timer.cpp" />
+    <ClCompile Include="..\..\source\core\system\Utils.cpp" />
+    <ClCompile Include="..\..\source\core\xml\BaseTypeConversion.cpp" />
+    <ClCompile Include="..\..\source\core\xml\ClassExport.cpp" />
+    <ClCompile Include="..\..\source\core\xml\PropertyBase.cpp" />
+    <ClCompile Include="..\..\source\core\xml\Tokenizer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\core\app\Logger.h" />
+    <ClInclude Include="..\..\source\core\app\ProcessingSettings.h" />
+    <ClInclude Include="..\..\source\core\app\QueueManager.h" />
+    <ClInclude Include="..\..\source\core\boost\atomic.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\base.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\builder.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\fallback.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\gcc-alpha.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\gcc-armv6+.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\gcc-ppc.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\gcc-x86.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\generic-cas.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\integral-casts.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\interlocked.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\linux-arm.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\detail\valid_integral_types.hpp" />
+    <ClInclude Include="..\..\source\core\boost\atomic\platform.hpp" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_error_position.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_reader.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_reader_template.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_stream_reader.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_utils.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_value.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_writer.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_writer_options.h" />
+    <ClInclude Include="..\..\source\core\boost\json-spirit\json_spirit_writer_template.h" />
+    <ClInclude Include="..\..\source\core\data\stack_nolock.h" />
+    <ClInclude Include="..\..\source\core\geo\CoordinateTransformation.h" />
+    <ClInclude Include="..\..\source\core\geo\ElevationLayerSettings.h" />
+    <ClInclude Include="..\..\source\core\geo\ElevationReader.h" />
+    <ClInclude Include="..\..\source\core\geo\ElevationTile.h" />
+    <ClInclude Include="..\..\source\core\geo\ImageLayerSettings.h" />
+    <ClInclude Include="..\..\source\core\geo\MercatorQuadtree.h" />
+    <ClInclude Include="..\..\source\core\geo\PointCloudReader.h" />
+    <ClInclude Include="..\..\source\core\geo\PointLayerSettings.h" />
+    <ClInclude Include="..\..\source\core\geo\PointMap.h" />
+    <ClInclude Include="..\..\source\core\geo\ProcessStatus.h" />
+    <ClInclude Include="..\..\source\core\http\Get.h" />
+    <ClInclude Include="..\..\source\core\http\Header.h" />
+    <ClInclude Include="..\..\source\core\http\Post.h" />
+    <ClInclude Include="..\..\source\core\image\ImageHandler.h" />
+    <ClInclude Include="..\..\source\core\image\ImageLoader.h" />
+    <ClInclude Include="..\..\source\core\image\ImageWriter.h" />
+    <ClInclude Include="..\..\source\core\image\JPEGHandler.h" />
+    <ClInclude Include="..\..\source\core\image\lodepng\lodepng.h" />
+    <ClInclude Include="..\..\source\core\image\stb_image_write.h" />
+    <ClInclude Include="..\..\source\core\io\CommonPath.h" />
+    <ClInclude Include="..\..\source\core\io\FileReaderFactory.h" />
+    <ClInclude Include="..\..\source\core\io\FileSystem.h" />
+    <ClInclude Include="..\..\source\core\io\FileWriterFactory.h" />
+    <ClInclude Include="..\..\source\core\io\fs\FileReaderDisk.h" />
+    <ClInclude Include="..\..\source\core\io\fs\FileReaderHttp.h" />
+    <ClInclude Include="..\..\source\core\io\fs\FileWriterDisk.h" />
+    <ClInclude Include="..\..\source\core\io\fs\FileWriterHttp.h" />
+    <ClInclude Include="..\..\source\core\io\fs\IFileReader.h" />
+    <ClInclude Include="..\..\source\core\io\fs\IFileWriter.h" />
+    <ClInclude Include="..\..\source\core\io\TarWriter.h" />
+    <ClInclude Include="..\..\source\core\math\CloudPoint.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\DelaunayLocationStructure.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\DelaunayMemoryManager.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\DelaunayTriangle.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\DelaunayTriangulation.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\DelaunayVertex.h" />
+    <ClInclude Include="..\..\source\core\math\delaunay\Predicates.h" />
+    <ClInclude Include="..\..\source\core\math\ElevationPoint.h" />
+    <ClInclude Include="..\..\source\core\math\ElevationPointUtils.h" />
+    <ClInclude Include="..\..\source\core\math\GeoCoord.h" />
+    <ClInclude Include="..\..\source\core\math\mat4.h" />
+    <ClInclude Include="..\..\source\core\math\mathutils.h" />
+    <ClInclude Include="..\..\source\core\math\Octocode.h" />
+    <ClInclude Include="..\..\source\core\math\vec2.h" />
+    <ClInclude Include="..\..\source\core\math\vec3.h" />
+    <ClInclude Include="..\..\source\core\memory\ReferenceCounter.h" />
+    <ClInclude Include="..\..\source\core\mpi\Utils.h" />
+    <ClInclude Include="..\..\source\core\og.h" />
+    <ClInclude Include="..\..\source\core\ogprocess.h" />
+    <ClInclude Include="..\..\source\core\string\ConvertUTF.h" />
+    <ClInclude Include="..\..\source\core\string\FilenameUtils.h" />
+    <ClInclude Include="..\..\source\core\string\StringUtils.h" />
+    <ClInclude Include="..\..\source\core\system\Timer.h" />
+    <ClInclude Include="..\..\source\core\system\Utils.h" />
+    <ClInclude Include="..\..\source\core\xml\ClassExport.h" />
+    <ClInclude Include="..\..\source\core\xml\PropertyBase.h" />
+    <ClInclude Include="..\..\source\core\xml\Tokenizer.h" />
+    <ClInclude Include="..\..\source\core\xml\xml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\source\core\image\ImageHandler.inl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\source\core\math\delaunay\DelaunayLocationKdTree.inl" />
+    <None Include="..\..\source\core\math\delaunay\DelaunayLocationLinear.inl" />
+    <None Include="..\..\source\core\math\delaunay\DelaunayLocationQuadtree.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7720B169-3379-4765-9216-6DBB2722588E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>OpenWebGlobeProcessing</RootNamespace>
+    <ProjectName>OpenWebGlobeProcessing</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;BUILD_OPENGLOBELIB;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\external;$(SolutionDir)..\..\external\boost\include;$(SolutionDir)..\..\source\core;$(SolutionDir)..\..\external\gdal;$(SolutionDir)..\..\external\jpeg-8c;$(SolutionDir)..\..\external\stxxl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4290;4250;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libstxxld.lib;jpeg-8c.lib;gdal_i.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jpeg-8c.lib;gdal_i.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\external\win32;$(SolutionDir)..\..\external\boost\lib\win32-msvc10;$(SolutionDir)..\..\external\boost\lib\win32-icc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\external\win32;$(SolutionDir)..\..\external\boost\lib\win32-msvc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)lib\$(Configuration)\$(ProjectName)d.dll  $(SolutionDir)\..\..\bin
+copy $(SolutionDir)lib\$(Configuration)\$(ProjectName)d.pdb  $(SolutionDir)\..\..\bin
+copy $(SolutionDir)\..\..\external\win32\*.dll $(SolutionDir)\..\..\bin</Command>
+      <Message>Copy DLLs</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;BUILD_OPENGLOBELIB;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\external;$(SolutionDir)..\..\external\boost\include;$(SolutionDir)..\..\source\core;$(SolutionDir)..\..\external\gdal;$(SolutionDir)..\..\external\jpeg-8c;$(SolutionDir)..\..\external\stxxl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4290;4250;4244</DisableSpecificWarnings>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <GlobalOptimizations>false</GlobalOptimizations>
+      <Parallelization>true</Parallelization>
+      <UseProcessorExtensions>SSE42</UseProcessorExtensions>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <C99Support>false</C99Support>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libstxxl.lib;jpeg-8c.lib;gdal_i.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\external\win32;$(SolutionDir)..\..\external\boost\lib\win32-msvc10;$(SolutionDir)..\..\external\boost\lib\win32-icc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\external\win32;$(SolutionDir)..\..\external\boost\lib\win32-msvc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy $(SolutionDir)lib\$(Configuration)\$(ProjectName).dll  $(SolutionDir)\..\..\bin
+copy $(SolutionDir)\..\..\external\win32\*.dll $(SolutionDir)\..\..\bin</Command>
+      <Message>Copy DLLs</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

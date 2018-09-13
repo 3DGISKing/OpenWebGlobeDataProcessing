@@ -1,0 +1,639 @@
+<!--
+/*******************************************************************************
+#      ____               __          __  _      _____ _       _               #
+#     / __ \              \ \        / / | |    / ____| |     | |              #
+#    | |  | |_ __   ___ _ __ \  /\  / /__| |__ | |  __| | ___ | |__   ___      #
+#    | |  | | '_ \ / _ \ '_ \ \/  \/ / _ \ '_ \| | |_ | |/ _ \| '_ \ / _ \     #
+#    | |__| | |_) |  __/ | | \  /\  /  __/ |_) | |__| | | (_) | |_) |  __/     #
+#     \____/| .__/ \___|_| |_|\/  \/ \___|_.__/ \_____|_|\___/|_.__/ \___|     #
+#           | |                                                                #
+#           |_|                 _____ _____  _  __                             #
+#                              / ____|  __ \| |/ /                             #
+#                             | (___ | |  | | ' /                              #
+#                              \___ \| |  | |  <                               #
+#                              ____) | |__| | . \                              #
+#                             |_____/|_____/|_|\_\                             #
+#                                                                              #
+#                              (c) 2011-2012 by                                #
+#           University of Applied Sciences Northwestern Switzerland            #
+#                     Institute of Geomatics Engineering                       #
+#                          Author:robert.wst@gmail.com                         #
+********************************************************************************
+*     Licensed under MIT License. Read the file LICENSE for more information   *
+*******************************************************************************/
+                      GeoGame: Prototype
+*******************************************************************************/-->
+<!DOCTYPE html>
+<html lang="en" style="width:100%; height:100%">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+    <script type="text/javascript" src="codemirror/codemirror.js"></script>
+    <script type="text/javascript" src="codemirror/javascript.js"></script>    
+    <script type="text/javascript" src="compiled/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="compiled/jquery-ui-1.8.18.custom.min.js"></script>
+	<script type="text/javascript" src="compiled/mapnikrenderer-optimized.js"></script>
+    <!--<script type="text/javascript" src="compiled/mapnikrenderer-optimized.js"></script>
+    <script type="text/javascript" src="external/closure-library/closure/goog/base.js"></script>
+    <script type="text/javascript" src="compiled/deps.js"></script>
+    <script type="text/javascript">goog.require('owg.process.MapnikRenderer');</script>-->
+    <link href="codemirror/codemirror.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+            $(function(){
+                // Tabs
+                $('#tabContainer').tabs();
+                $("input:button").button();
+                $("#loadmap" ).button({
+                    icons: {
+                        primary: "ui-icon-folder-open"
+                    }});
+                $("#savemap" ).button({
+                    icons: {
+                        primary: "ui-icon-disk"
+                    }});
+                $("#newmap" ).button({
+                    icons: {
+                        primary: "ui-icon-document"
+                    }});
+                $("#filedialog").dialog({ autoOpen: false, width: 500, buttons: { "Ok": function() {
+                    if(!$("#dragenabled").attr("checked"))
+                    {
+                        m_currentFile = document.getElementById("mapfile").files[0];
+                    }
+                    LoadMapFromFile(m_currentFile);
+                    $(this).dialog("close"); } }});
+                $("#filedialog" ).bind( "dialogopen", function(event, ui) {
+                    m_currentFile = null;
+                });
+                var dropZone = document.getElementById('dropfile');
+                dropZone.addEventListener('dragover', handleDragOver, false);
+                dropZone.addEventListener('drop', handleFileSelect, false);
+
+            });
+
+	 		var m_layers = new Array();
+            var m_mapnik = new MapnikRenderer("");
+            var m_currentFile = null;
+
+			function Layer(type, name, srs, styleId, params, status)
+			{
+				this.type = type;
+				this.name = name;
+				this.srs = srs;
+				this.styleId = styleId;
+				this.params = params;
+                this.status = status;
+			}
+
+            function Map(bgcolor, srs, zooms, layers, styles)
+            {
+                this.bgcolor = bgcolor;
+                this.srs = srs;
+                this.zooms = zooms;
+                this.layers = layers;
+                this.styles = styles;
+            }
+
+			function SwitchLayerType()
+			{
+				if($('#layertype').val() == "file")
+				{
+					$('#layer_db').css("visibility", "collapse");
+					$('#layer_db').css("height", "0px");
+					$('#layer_file').css("visibility", "visible");
+				} else
+				{
+					$('#layer_db').css("visibility", "visible");
+					$('#layer_db').css("height", "175px");
+					$('#layer_file').css("visibility", "collapse");
+				}
+			}
+			
+			function AddLayer()
+			{
+				var params = new Object();
+				if($('#layertype').val() == "file")
+				{
+					params.type = $('#layerfiletype').val();
+					params.file = $('#layerfile').val();
+				} else
+				{
+					params.dbtype = $('#dbtype').val();
+					params.dbhost = $('#dbhost').val();
+					params.dbport = $('#dbport').val();
+					if($('#dbestimate').attr('checked'))
+					{params.dbestimate = "true";}
+					else
+					{params.dbestimate = "false";}
+					params.dbname = $('#dbname').val();
+					params.dbuser = $('#dbuser').val();
+					params.dbpass = $('#dbpass').val();
+					params.dbtable = $('#dbtable').val();
+				}
+                var layerStatus = "off";
+                if($('#layerstatus').attr('checked'))
+                {layerStatus = "on";}
+				var layer = new Layer($('#layertype').val(),$('#layername').val(),$('#layersrs').val(),$('#layerstyle').val(),params, layerStatus);
+				m_layers.push(layer);
+				UpdateLayerList();
+			}
+			
+			function RemoveLayer()
+			{
+				var remove = function(array,from, to) {
+				  var rest = array.slice((to || from) + 1 || array.length);
+				  array.length = from < 0 ? array.length + from : from;
+				  return array.push.apply(array, rest);
+				};
+				for(var i = 0; i < m_layers.length; i++)
+				{
+					if(m_layers[i].name == $('#layerlist').val())
+					{
+						remove(m_layers, i);
+						break;
+					}
+				}
+				UpdateLayerList();
+                SelectLayer();
+			}
+			
+			function SaveLayer()
+			{
+                for(var i = 0; i < m_layers.length; i++)
+                {
+                    if(m_layers[i].name == $('#layerlist').val())
+                    {
+                        var params = m_layers[i].params;
+                        if($('#layertype').val() == "file")
+                        {
+                            params.type = $('#layerfiletype').val();
+                            params.file = $('#layerfile').val();
+                        } else
+                        {
+                            params.dbtype = $('#dbtype').val();
+                            params.dbhost = $('#dbhost').val();
+                            params.dbport = $('#dbport').val();
+                            if($('#dbestimate').attr('checked'))
+                            {params.dbestimate = "true";}
+                            else
+                            {params.dbestimate = "false";}
+                            params.dbname = $('#dbname').val();
+                            params.dbuser = $('#dbuser').val();
+                            params.dbpass = $('#dbpass').val();
+                            params.dbtable = $('#dbtable').val();
+                        }
+                        var layerStatus = "off";
+                        if($('#layerstatus').attr('checked'))
+                        {layerStatus = "on";}
+                        m_layers[i].type= $('#layertype').val();
+                        m_layers[i].name= $('#layername').val();
+                        m_layers[i].srs= $('#layersrs').val();
+                        m_layers[i].styleId= $('#layerstyle').val();
+                        m_layers[i].status= layerStatus;
+                        m_layers[i].type= $('#layertype').val();
+                    }
+                }
+			}
+			
+			function UpdateLayerList()
+			{
+                jQuery('#layerlist').empty();
+                var opt = document.createElement("option");
+                opt.value = "null";
+                opt.text = "(New layer)";
+                jQuery('#layerlist').append(opt);
+				for(var i = 0; i < m_layers.length; i++)
+				{
+					var opt = document.createElement("option");
+					opt.value = m_layers[i].name;
+					opt.text = m_layers[i].name;
+                    jQuery('#layerlist').append(opt);
+				}
+			}
+			
+			function ValidateStyles(value)
+			{
+				try {
+					var obj = jQuery.parseJSON(value);
+					jQuery('#styleerror').html('');
+                    return true;
+				} catch(err){
+					jQuery('#styleerror').html("Parsing Error : " + err.message);
+                    return false;
+				}			
+			}
+
+             function ValidateZooms(value)
+             {
+                 try {
+                     var obj = jQuery.parseJSON(value);
+                     jQuery('#zoomerror').html('');
+                     return true;
+                 } catch(err){
+                     jQuery('#zoomerror').html("Parsing Error : " + err.message);
+                     return false;
+                 }
+             }
+
+            function Render(style)
+            {
+                var response = function(img)
+                {
+                    //alert(decodeURIComponent(val));
+                    var c=document.getElementById("rendercanvas");
+                    var ctx = c.getContext("2d");
+                    ctx.canvas.width = parseInt($("#img_w").val());
+                    ctx.canvas.height = parseInt($("#img_h").val());
+                    $('#rendercanvas').css("width", $("#img_w").val()+"px");
+                    $('#rendercanvas').css("height", $("#img_h").val()+"px");
+                    ctx.drawImage(img,0,0);
+                };
+                if(ValidateZooms(jQuery('#zooms').val()))
+                {
+                    if(ValidateStyles(style))
+                    {
+                        m_mapnik.RenderTile("style="+encodeURIComponent(style)
+                                +"&zooms="+encodeURIComponent(jQuery('#zooms').val())
+                                +"&layers="+encodeURIComponent(JSON.stringify(m_layers))
+                                +"&srs="+encodeURIComponent(jQuery('#mapsrs').val())
+                                +"&bgcolor="+encodeURIComponent(jQuery('#bgcolor').val())
+                                +"&width="+encodeURIComponent(jQuery('#img_w').val())
+                                +"&height="+encodeURIComponent(jQuery('#img_h').val())
+                                +"&lon0="+encodeURIComponent(jQuery('#lon0').val())
+                                +"&lat0="+encodeURIComponent(jQuery('#lat0').val())
+                                +"&lon1="+encodeURIComponent(jQuery('#lon1').val())
+                                +"&lat1="+encodeURIComponent(jQuery('#lat1').val())
+                                ,response);
+                    }
+                }
+
+            }
+
+            function LoadMapFromFile(file)
+            {
+                if(file != null)
+                {
+                    var reader = new FileReader();
+                    reader.onload = (function(e) {
+                        var obj = jQuery.parseJSON(e.target.result);
+                        m_layers = obj["layers"];
+                        var styles = JSON.stringify(obj["styles"], null, '\t');
+                        editor.setValue(styles);
+                        var zooms = JSON.stringify(obj["zooms"], null, '\t');
+                        jQuery('#zooms').val(zooms);
+                        jQuery('#mapsrs').val(obj["srs"]);
+                        jQuery('#bgcolor').val(obj["bgcolor"]);
+                        UpdateLayerList();
+                    });
+                    // Read in the image file as a data URL.
+                    reader.readAsText(file);
+                }
+            }
+
+            function handleDragOver(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+            }
+
+            function SwitchDragDrop()
+            {
+                if($('#dragenabled').attr("checked"))
+                {
+                    $('#mapfile').css({"visibility": "hidden"});
+                    $('#dropfile').css({"visibility": "visible"});
+                }else
+                {
+                    $('#mapfile').css({"visibility": "visible"});
+                    $('#dropfile').css({"visibility": "hidden"});
+                }
+            }
+
+            function handleFileSelect(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                var files = evt.dataTransfer.files; // FileList object.
+                $('#dropfile').html(files[0].name);
+                m_currentFile = files[0];
+            }
+
+            function LoadMap()
+            {
+                $("#filedialog").dialog('open');
+            }
+
+            function SaveMap()
+            {
+                var styles = editor.getValue();
+                if(ValidateZooms(jQuery('#zooms').val()))
+                {
+                    if(ValidateStyles(styles))
+                    {
+                        var styleobj = jQuery.parseJSON(styles);
+                        var zoomobj = jQuery.parseJSON(jQuery('#zooms').val());
+                        var map = new Map(jQuery('#bgcolor').val(), jQuery('#mapsrs').val(),
+                                zoomobj, m_layers,styleobj);
+                        window.open("getfile.py?data="+encodeURIComponent(JSON.stringify(map)));
+                    }
+                }
+            }
+
+            function NewMap()
+            {
+
+            }
+
+            function SelectLayer()
+            {
+                if($('#layerlist').val() == "null")
+                {
+                    $('#addlayer').css({"visibility": "visible"});
+                    $('#savelayer').css({"visibility": "hidden"});
+                    $('#removelayer').css({"visibility": "hidden"});
+                    $("#layername").val("");
+                    $("#layertype").val("");
+                    $("#layersrs").val("");
+                    $("#layerstyle").val("");
+                    $('#layerstatus').attr('checked', true);
+                    $("#layertype").val("db");
+                    $("#dbtype").val("");
+                    $("#dbhost").val("");
+                    $("#dbport").val("");
+                    $("#dbname").val("");
+                    $("#dbuser").val("");
+                    $("#dbpass").val("");
+                    $("#dbtable").val("");
+                    $("#dbestimate").attr('checked', false);
+                    $("#layerfiletype").val("shape");
+                    $("#layerfile").val("");
+                    SwitchLayerType();
+                }
+                else
+                {
+                    $('#addlayer').css({"visibility": "hidden"});
+                    $('#savelayer').css({"visibility": "visible"});
+                    $('#removelayer').css({"visibility": "visible"});
+                    for(var i = 0; i < m_layers.length; i++)
+                    {
+                        if(m_layers[i].name == $('#layerlist').val())
+                        {
+                            var lyr = m_layers[i];
+                            $("#layername").val(lyr.name);
+                            $("#layertype").val(lyr.type);
+                            $("#layersrs").val(lyr.srs);
+                            $("#layerstyle").val(lyr.styleId);
+                            if(lyr.status == "on")
+                                $('#layerstatus').attr('checked', true)
+                            else
+                                $('#layerstatus').attr('checked', false);
+                            if(lyr.type == "db")
+                            {
+                                $("#layertype").val("db");
+                                SwitchLayerType();
+                                $("#dbtype").val(lyr.params.dbtype);
+                                $("#dbhost").val(lyr.params.dbhost);
+                                $("#dbport").val(lyr.params.dbport);
+                                $("#dbname").val(lyr.params.dbname);
+                                $("#dbuser").val(lyr.params.dbuser);
+                                $("#dbpass").val(lyr.params.dbpass);
+                                $("#dbtable").val(lyr.params.dbtable);
+                                $("#dbestimate").val(lyr.params.dbestimate);
+                            }else if(lyr.type == "file")
+                            {
+                                $("#layertype").val("file");
+                                SwitchLayerType();
+                                $("#layerfiletype").val(lyr.params.type);
+                                $("#layerfile").val(lyr.params.file);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+    </script>
+</head>
+<body onLoad="">
+    <div id="filedialog" title="Open File">
+        <p>Load map from file: <input id="dragenabled" style="float:right" type="checkbox" onchange="SwitchDragDrop()"  checked/><span style="float:right">Drag&amp;drop enabled&nbsp;</span></p>
+        <input style="visibility: hidden" type="file" id="mapfile" name="files[]" />
+        <div id="dropfile" style="width: 100%; height: 50px; border: 1px dashed #AAA; margin-top: 5px; line-height:  50px; text-align: center">Drop file here</div>
+    </div>
+   	<div id="head" class="ui-widget-header">
+           <button id="savemap" onClick="SaveMap()" style="float:right; margin-top: 20px; font-size: 12px;margin-right: 10px">Save</button>
+           <button id="loadmap" onClick="LoadMap()" style="float:right; margin-top: 20px; font-size: 12px;margin-right: 10px">Load</button>
+           <button id="newmap" onClick="Clear()" style="float:right; margin-top: 20px; font-size: 12px;margin-right: 10px">New</button>
+   	</div>
+   	<div id="main">
+      	<div class="ui-widget-content" id="renderview">
+         <h2>Preview</h2><input type="button"  id="render" onClick="Render(editor.getValue())" value="Render" style="float:right; margin-top: -25px"/>
+         <br/>
+              <div id="render_image" style="overflow: scroll;background-color: #FFFFFF; padding: 5px; border: 1px solid #CCC;height:350px;-moz-border-radius: 4px;border-radius:4px;margin: 3px">
+                  <canvas id="rendercanvas" width="50" height="50" style=""></canvas>
+              </div>
+         </div>
+     </div>
+      <div id="editorcontainer">
+      <div id="tabContainer">
+               <ul>
+               <li><a href="#tab_2">Layers</a></li>
+               <li><a href="#tab_4">Styles</a></li>
+               <li><a href="#tab_1">Map Definitions</a></li>
+               <li><a href="#tab_3">Settings</a></li>
+
+               </ul>
+               <div id="tab_1">
+                 	<h2>Map Definitions</h2>
+                 	<table border="0" style="">
+                     <tr>
+                        <td>Backgroundcolor: </td>
+                        <td><input type="text" id="bgcolor" style="width:350px" value="rgba(255,255,255,0)" /></td>
+                     </tr>
+                     <tr>
+                         <td>Map Projection (SRS): </td>
+                         <td><input type="text" id="mapsrs" style="width:350px" value="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs" /></td>
+                     </tr>
+                     <tr>
+                        <td>Zoom-Levels:</td>
+                        <td colspan="2"><textarea id="zooms" style="width: 350px; height: 200px">[
+250000000000,
+500000000,
+200000000,
+100000000,
+50000000,
+25000000,
+12500000,
+6500000,
+3000000,
+1500000,
+750000,
+400000,
+200000,
+100000,
+50000,
+25000,
+12500,
+5000,
+2500,
+1000
+]</textarea><br/><div id="zoomerror" style="float:right; color:#993300; font-size: 12px; padding-top: 5px"></div></td>
+                     </tr>
+               	</table>
+               </div>
+               <div  id="tab_2">
+                 	<h2>Layers</h2>
+                  <select id="layerlist" onchange="SelectLayer()" style="width: 250px"><option value="null">(New layer)</option></select>
+                  <input type="button" id="addlayer" onClick="AddLayer()" style="visibility: visible" value="Add"/>
+                  <input type="button" id="savelayer" onClick="SaveLayer()" style="visibility: hidden"value="Save"/>
+                  <input type="button" id="removelayer" onClick="RemoveLayer()" style="visibility: hidden" value="Remove"/>
+                 	<div class="content_frame">
+                         <h3>Properties</h3>
+             			<table border="0" style="">
+                     	<tr>
+                        	<td>Type:</td>
+                        	<td><select id="layertype" onChange="SwitchLayerType()" style="width:150px">
+                        	   <option value="db">Database</option>
+                        	   <option value="file">File</option>
+                        	</select></td>
+                           <td>Style-Id:</td>
+                        	<td><input type="text" id="layerstyle" style="width:145px" value="" /></td>
+                        </tr>
+		               	<tr>
+                        	<td>Name:</td>
+                        	<td><input type="text" id="layername" style="width:145px" value="" /></td>
+                           <td>SRS:</td>
+                        	<td><input type="text" id="layersrs" style="width:145px" value="+proj=latlong +datum=WGS84" /></td>
+                        </tr>
+                         <tr>
+                             <td>Layer Active:</td>
+                             <td><input type="checkbox" id="layerstatus" checked/></td>
+                         </tr>
+                     </table>
+                     <div id="layer_db" class="content_frame">
+                     	<h3>Database properties</h3>
+                     	<table border="0" cellspacing="4px">
+                     	<tr>
+                        	<td>Type:</td>
+                        	<td><select id="dbtype" style="width:150px">
+                        	   <option value="postgis">PostGIS</option>
+                        	</select></td>
+                           <td>DB Name:</td>
+                        	<td><input type="text" id="dbname" style="width:145px" value="" /></td>
+                        </tr>
+		               	<tr>
+                        	<td>Host:</td>
+                        	<td><input type="text" id="dbhost" style="width:145px" value="localhost" /></td>
+                           <td>Username:</td>
+                        	<td><input type="text" id="dbuser" style="width:145px" value="" /></td>
+                        </tr>
+                        <tr>
+                        	<td>Port:</td>
+                        	<td><input type="text" id="dbport" style="width:145px" value="5432" /></td>
+                           <td>Password:</td>
+                        	<td><input type="password" id="dbpass" style="width:145px" value="" /></td>
+                        </tr>
+                        <tr>
+                        	<td>Estimate extent:</td>
+                        	<td><input type="checkbox" id="dbestimate"/></td>
+                           <td >Argument:</td>
+                        	<td><textarea id="dbtable" style="width: 200px; height: 50px">(select what from table where id = 0) as result</textarea></td>
+                        </tr>
+                        <tr>
+                       
+                        </tr>
+                     </table>
+                     </div>
+                     <div id="layer_file" class="content_frame">
+                     	<h3>File properties</h3>
+                     	<table border="0" cellspacing="4px">
+                     	<tr>
+                        	<td>Type:</td>
+                        	<td><select id="layerfiletype" style="width:150px">
+                        	   <option value="shape">Shapefile</option>
+                              <option value="gdal">GDAL GeoTiff</option>
+                        	</select></td>
+                        </tr>
+		               	<tr>
+                        	<td>File:</td>
+                        	<td><input type="text" id="layerfile" style="width:145px" value="" /></td>
+                        </tr>
+                     </table>
+                     </div>
+                 	</div>
+               </div>
+               <div id="tab_3">
+                 <h2>Settings</h2>
+                    <div class="content_frame">
+                        <h3>Boundaries (WGS84):</h3>
+                       <table>
+                           <tr><td>lon0: </td><td><input type="text" id="lon0" style="width:150px" value="-13.224"/></td>
+                               <td>lat0: </td><td><input type="text" id="lat0" style="width:150px" value="58.801"/></td></tr>
+                           <tr><td>lon1: </td><td><input type="text" id="lon1" style="width:150px" value="30.370"/></td>
+                               <td>lat1: </td><td><input type="text" id="lat1" style="width:150px" value="32.169"/></td></tr></table>
+                    </div>
+                    <div class="content_frame"><h3>Tilesize:</h3>
+                       <table>
+                           <tr><td>Width: </td><td><input type="text" id="img_w" style="width:150px" value="256"/></td>
+                               <td>Height: </td><td><input type="text" id="img_h" style="width:150px" value="256"/></td></tr></table>
+                     </div>
+               </div>
+
+               <div  id="tab_4">
+                <h2>Styles</h2>
+                <input type="button"  id="validatestyle" onClick="ValidateStyles(editor.getValue())" value="Validate" style="float:right; margin-top: -20px"/><div id="styleerror" style="float:right;margin-top: -16px; color:#993300; font-size: 12px; padding-right: 5px"></div><br/>
+                <textarea style="width: 100%;background-color:#EEEEEE" id="code" name="code">
+[
+   {
+      "name" : "landuse",
+      "rules": [
+         {	
+            "minzoom": 2,
+            "maxzoom": 2,
+            "filter": "[landuse] = 'quarry'",
+            "symbolizers":
+            [
+                {
+                    "type": "polygon",
+                    "params": {
+                        "fill" : "#abdf96"
+                    }
+                }
+            ]
+         }
+      ]
+   }
+]
+                </textarea>
+            </div>
+        </div>
+      </div>
+		<script type="text/javascript">
+				window.onload=function() {
+                    SizeLayout();
+                };
+
+				var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+							  lineNumbers: true,
+							  matchBrackets: true
+							});
+                window.onresize = function() {
+                    SizeLayout();
+                };
+                function SizeLayout()
+                {
+                    var rHeight = (window.innerHeight-95);
+                    var sHeight = (window.innerHeight-75);
+                    var eHeight = (window.innerHeight-90);
+                    var fHeight = (window.innerHeight-200);
+                    var vHeight = (window.innerHeight-160);
+                    $('#renderview').css("height", rHeight+"px");
+                    $('#editorcontainer').css("height", sHeight+"px");
+                    $('#tabContainer').css("height", (eHeight)+"px");
+                    $('.CodeMirror-scroll').css("height", fHeight+"px");
+                    $('#render_image').css("height", vHeight+"px");
+                }
+
+         </script>
+</body>
+</html>
