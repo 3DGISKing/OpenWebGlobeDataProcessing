@@ -69,7 +69,7 @@ struct SJob
 
 //------------------------------------------------------------------------------
 // globals:
-mapnik::projection g_mapnikProj;
+mapnik::projection g_mapnikProj("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 mapnik::Map g_map(256, 256);
 GoogleProjection g_gProj;
 std::string map_file;
@@ -437,7 +437,7 @@ int main ( int argc , char** argv)
          std::cout << "[" << sProcessHostName<< "] " << "..set plugin-path to "<<plugin_path<<"\n"<< std::flush;
          #endif
 
-         datasource_cache::instance()->register_datasources(plugin_path.c_str()); 
+         datasource_cache::instance().register_datasources(plugin_path.c_str()); 
          std::string font_dir = mapnik_dir + "fonts/dejavu-fonts-ttf-2.30/ttf/";
          {
             std::cout << "[" << sProcessHostName<< "] " << "..looking for DejaVuSans fonts in... " << font_dir << "\n"<< std::flush;
@@ -458,7 +458,7 @@ int main ( int argc , char** argv)
          } else { std::cout << "[" << sProcessHostName<< "] " << "....#Error# Font directory not found!\n" << std::flush; }
          //---------------------------------------------------------------------------
          // -- Generate map container
-         g_map.set_background(color_factory::from_string("white"));
+         g_map.set_background(parse_color("white"));
          std::cout << "[" << sProcessHostName<< "] " << "..loading map file \"" << map_file << "\".....";
          load_map(g_map,map_file);
          std::cout << "[" << sProcessHostName<< "] " << "....Ok!\n" << std::flush;

@@ -58,7 +58,7 @@ extern "C"
    PYTHON_MAPNIK_API char* PyRenderTile(char * mapnik_dir, char* mapdef, int w, int h, double lon0, double lat0, double lon1, double lat1, char* output)
    {
       std::stringstream plugin_path;
-      mapnik::projection mapnikProj;
+      mapnik::projection mapnikProj("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
       using namespace mapnik;
       try
       {
@@ -72,7 +72,7 @@ extern "C"
 #else
 	plugin_path << mapnik_dir << "input/";
 #endif
-         datasource_cache::instance()->register_datasources(plugin_path.str().c_str());
+         datasource_cache::instance().register_datasources(plugin_path.str().c_str());
          std::stringstream font_dir;
          font_dir << mapnik_dir << "fonts/dejavu-fonts-ttf-2.30/ttf/";
          if (boost::filesystem3::exists( font_dir.str() ) )
@@ -91,7 +91,7 @@ extern "C"
          } else { std::cout << "#Error# Font directory not found!\n" << std::flush; }
          //---------------------------------------------------------------------------
          // -- Generate map container
-         map.set_background(color_factory::from_string("white"));
+         map.set_background(parse_color("white"));
          std::cout << "..parse map file definitions.....";
          //std::cout << mapdef << std::flush;
          load_map_string(map,mapdef);
